@@ -18,6 +18,4 @@ su -c 'rm -rf /home/hubot/node_modules/hubot-rocketchat/.git && \
        rm /home/hubot/external-scripts.json && \
        rm /home/hubot/scripts/example.coffee' - hubot
 
-cd /dist
-rm -rf ..?* .[!.]* *
 cp -a /home/hubot/. /dist/
