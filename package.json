@@ -1,0 +1,53 @@
+{
+  "name": "hubot-rocketchat",
+  "version": "1.0.5",
+  "author": {
+    "name": "Rocket.Chat",
+    "url": "https://rocket.chat/"
+  },
+  "contributors": [
+    {
+      "name": "Sing Li",
+      "email": "sing.li@rocket.chat"
+    },
+    {
+      "name": "Gabriel Engel",
+      "email": "gabriel.engel@rocket.chat"
+    },
+    {
+      "name": "Aaron Ogle",
+      "email": "aaron.ogle@rocket.chat"
+    }
+  ],
+  "description": "Hubot Rocket.Chat Adapter",
+  "keywords": [
+    "hubot",
+    "adapter",
+    "rocketchat",
+    "rocket",
+    "chat"
+  ],
+  "scripts": {
+    "test": "docker-compose -f docker-compose-test.yml up -d",
+    "start": "docker-compose up -d"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RocketChat/hubot-rocketchat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RocketChat/hubot-rocketchat/issues",
+    "email": "support@rocket.chat"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.7.1"
+  },
+  "main": "./src/rocketchat",
+  "dependencies": {
+    "asteroid": "https://github.com/RocketChat/asteroid.git",
+    "lru-cache": "~4.0.0",
+    "parent-require": "^1.0.0",
+    "q": "^1.4.1"
+  }
+}

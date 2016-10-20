@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  hubot:
+    image: ictu/rocketbot
+    environment:
+      - ROCKETCHAT_URL=<rocketchat url>
+      - ROCKETCHAT_ROOM=iqt-integration
+      - LISTEN_ON_ALL_PUBLIC=true
+      - ROCKETCHAT_USER=<rocketchat user name>
+      - ROCKETCHAT_PASSWORD=<password>
+      - ROCKETCHAT_AUTH=password
+      - BOT_NAME=<bot name>
+      - RESPOND_TO_DM=true

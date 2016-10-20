@@ -1,0 +1,11 @@
+FROM mhart/alpine-node:6
+
+RUN adduser hubot -h /home/hubot -D
+
+ADD ./dist /home/hubot
+RUN chown hubot:hubot -R /home/hubot
+
+WORKDIR /home/hubot
+USER hubot
+
+CMD bin/hubot -n $BOT_NAME -a rocketchat

@@ -1,0 +1,4 @@
+node_modules
+scripts/node_modules
+dist
+docker-compose-test.yml
