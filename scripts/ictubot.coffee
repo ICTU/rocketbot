@@ -13,17 +13,16 @@ module.exports = (robot) ->
   robot.respond /help/i, (res) ->
     res.send """
     This is your friendly ICTU ISD automation bot.
-    To make me do your bidding, prefix the command with my name.
+    Prefix the commands below with my name, so I know you are talking to me:
 
-    Commands:
-      *help*
-          I will display this message.
+    *help*
+        I will display this message.
 
-      *clean docker registry*
-          I will start a garbage collection process in your project Docker Registry.
-          To avoid data corruption, I will first stop the docker registry.
-          Once the gabage collection is done, I will start the docker registry for you.
-          You can only issue this command from a private room with the name of your project, for example 'rws'.
+    *clean docker registry*
+        I will start a garbage collection process in your project docker registry.
+        To avoid data corruption, I will first stop the docker registry.
+        Once the garbage collection is done, I will start the docker registry for you.
+        You can only issue this command from a private room with the name of your project, for example 'rws'.
     """
 
   robot.respond /clean( my| our)? docker registry/i, (res) ->
