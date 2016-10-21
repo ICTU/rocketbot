@@ -1,0 +1,17 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - echo "no install"
+
+test:
+  override:
+    - echo "no tests!"
+
+deployment:
+  hub:
+    commands:
+      - ./build.sh
+      - docker push ictu/rocketbot
