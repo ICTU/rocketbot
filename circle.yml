@@ -12,6 +12,7 @@ test:
 
 deployment:
   hub:
+    branch: master
     commands:
       - ./build.sh
       - docker push ictu/rocketbot
