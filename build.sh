@@ -1,6 +1,5 @@
 #! /bin/sh
 rm -rf dist
-docker build -f Dockerfile.build.base -t ictu/rocketbot-build-base .
 docker run -it --rm \
   -v $PWD/dist:/dist \
   -v $PWD/build-hubot.sh:/build-hubot.sh \
