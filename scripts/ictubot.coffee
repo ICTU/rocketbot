@@ -1,3 +1,5 @@
+Asteroid = require 'asteroid'
+
 MongoClient = require('mongodb').MongoClient
 jenkins = require 'jenkins'
 
@@ -28,7 +30,7 @@ module.exports = (robot) ->
 
   robot.respond /help/i, (res) ->
     res.send """
-    This is your friendly ICTU ISD automation bot.
+    Hello #{res.message.user.name}, I am the gorgeous ICTU ISD automation bot.
     Prefix the commands below with my name, so I know you are talking to me:
 
     *help*
