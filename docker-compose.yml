@@ -12,3 +12,4 @@ services:
       - ROCKETCHAT_AUTH=password
       - BOT_NAME=<bot name>
       - RESPOND_TO_DM=true
+      - ADMINS=<comma separated list of user names>

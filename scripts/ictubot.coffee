@@ -1,5 +1,3 @@
-Asteroid = require 'asteroid'
-
 MongoClient = require('mongodb').MongoClient
 jenkins = require 'jenkins'
 
@@ -10,7 +8,7 @@ POWER_COMMANDS = [
   'ssh.execute.command' # String that matches the listener ID
 ]
 
-ADMINS = [ 'giren', 'jepee', 'gakoj']
+ADMINS = process.env.ADMINS?.split(',').map (admin) -> admin.trim()
 
 rooms = null
 MongoClient.connect MONGO_URL, (err, db) ->
