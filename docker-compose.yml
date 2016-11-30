@@ -4,6 +4,7 @@ services:
   hubot:
     image: ictu/rocketbot
     environment:
+      - EXPRESS_PORT=<http api port>
       - ROCKETCHAT_URL=<rocketchat url>
       - ROCKETCHAT_ROOM=iqt-integration
       - LISTEN_ON_ALL_PUBLIC=true
@@ -12,4 +13,7 @@ services:
       - ROCKETCHAT_AUTH=password
       - BOT_NAME=<bot name>
       - RESPOND_TO_DM=true
+      - MONGO_URL=<mongodb url>
+      - JENKINS_URL=<jenkins url>
+      - WIKI_URL=<semantic mediawiki url>
       - ADMINS=<comma separated list of user names>

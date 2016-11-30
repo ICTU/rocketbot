@@ -1,8 +1,10 @@
+_ = require 'lodash'
 MongoClient = require('mongodb').MongoClient
 jenkins = require 'jenkins'
 
 MONGO_URL = process.env.MONGO_URL
 JENKINS_URL = process.env.JENKINS_URL
+WIKI_URL = process.env.WIKI_URL
 
 POWER_COMMANDS = [
   'ssh.execute.command' # String that matches the listener ID
@@ -12,10 +14,22 @@ ADMINS = process.env.ADMINS?.split(',').map (admin) -> admin.trim()
 
 rooms = null
 MongoClient.connect MONGO_URL, (err, db) ->
+  throw new Error(err) if err
   console.log "Connected to mongo server at #{MONGO_URL}"
   rooms = db.collection 'rocketchat_room'
 
 module.exports = (robot) ->
+  robot.router.post '/zabbix', (req, res) ->
+    data = JSON.parse req.body.payload
+    fields = data.attachments[0].fields
+    host = _.find fields, title: 'Host'
+    robot.http("#{WIKI_URL}/api.php?action=ask&format=json&query=[[Category:Project]]|[[On_host::#{host.value}]]").get() (err, res, body) ->
+      results = JSON.parse(body).query.results
+      for project, ignore of results
+        rooms.findOne {name: project.toLowerCase()}, (err, room) ->
+          robot.messageRoom room._id, data if room
+    res.send 'OK'
+
   robot.listenerMiddleware (context, next, done) ->
     if context.listener.options.id in POWER_COMMANDS
       if context.response.message.user.name in ADMINS
