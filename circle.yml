@@ -14,10 +14,12 @@ deployment:
   hub:
     tag: /^[0-9]+\.[0-9]+\.[0-9]+$/
     commands:
-      - docker build -t ictu/rocketbot:${CIRCLE_TAG} .
+      - ./build.sh
+      - docker tag ictu/rocketbot ictu/rocketbot:${CIRCLE_TAG}
       - MAJOR_VERSION=${CIRCLE_TAG/.*}; docker tag ictu/rocketbot:${CIRCLE_TAG} ictu/rocketbot:${MAJOR_VERSION}
       - MINOR_VERSION=${CIRCLE_TAG%.*}; docker tag ictu/rocketbot:${CIRCLE_TAG} ictu/rocketbot:${MINOR_VERSION}
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push ictu/rocketbot
       - docker push ictu/rocketbot:${CIRCLE_TAG}
       - docker push ictu/rocketbot:${MINOR_VERSION}
       - docker push ictu/rocketbot:${MAJOR_VERSION}
