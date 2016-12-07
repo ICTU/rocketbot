@@ -4,7 +4,7 @@ jenkins = require 'jenkins'
 
 MONGO_URL = process.env.MONGO_URL
 JENKINS_URL = process.env.JENKINS_URL
-WIKI_URL = process.env.WIKI_URL
+SEMANTIQL_URL = process.env.SEMANTIQL_URL
 
 POWER_COMMANDS = [
   'ssh.execute.command' # String that matches the listener ID
@@ -23,11 +23,16 @@ module.exports = (robot) ->
     data = JSON.parse req.body.payload
     fields = data.attachments[0].fields
     host = _.find fields, title: 'Host'
-    robot.http("#{WIKI_URL}/api.php?action=ask&format=json&query=[[Category:Project]]|[[On_host::#{host.value}]]").get() (err, res, body) ->
-      results = JSON.parse(body).query.results
-      for project, ignore of results
-        rooms.findOne {name: project.toLowerCase()}, (err, room) ->
-          robot.messageRoom room._id, data if room
+    robot.http("#{SEMANTIQL_URL}/api")
+      .header('Content-Type', 'application/json')
+      .post(JSON.stringify(query: "{projects(host:\"#{host}\"){ name }}")) (err, res, body) ->
+        if err
+          console.error err
+        else
+          projects = JSON.parse(body).data.projects
+          for project in projects
+            rooms.findOne {name: project?.name.toLowerCase()}, (err, room) ->
+              robot.messageRoom room._id, data if room
     res.send 'OK'
 
   robot.listenerMiddleware (context, next, done) ->

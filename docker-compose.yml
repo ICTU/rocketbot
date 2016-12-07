@@ -15,5 +15,5 @@ services:
       - RESPOND_TO_DM=true
       - MONGO_URL=<mongodb url>
       - JENKINS_URL=<jenkins url>
-      - WIKI_URL=<semantic mediawiki url>
+      - SEMANTIQL_URL=<semantiql url>
       - ADMINS=<comma separated list of user names>
