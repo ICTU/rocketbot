@@ -25,7 +25,7 @@ module.exports = (robot) ->
     host = _.find fields, title: 'Host'
     robot.http("#{SEMANTIQL_URL}/api")
       .header('Content-Type', 'application/json')
-      .post(JSON.stringify(query: "{projects(host:\"#{host}\"){ name }}")) (err, res, body) ->
+      .post(JSON.stringify(query: "{projects(host:\"#{host?.value}\"){ name }}")) (err, res, body) ->
         if err
           console.error err
         else
