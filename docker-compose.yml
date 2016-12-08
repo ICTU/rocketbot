@@ -13,7 +13,6 @@ services:
       - ROCKETCHAT_AUTH=password
       - BOT_NAME=<bot name>
       - RESPOND_TO_DM=true
-      - MONGO_URL=<mongodb url>
       - JENKINS_URL=<jenkins url>
       - SEMANTIQL_URL=<semantiql url>
       - ADMINS=<comma separated list of user names>

@@ -1,8 +1,6 @@
 _ = require 'lodash'
-MongoClient = require('mongodb').MongoClient
 jenkins = require 'jenkins'
 
-MONGO_URL = process.env.MONGO_URL
 JENKINS_URL = process.env.JENKINS_URL
 SEMANTIQL_URL = process.env.SEMANTIQL_URL
 
@@ -12,27 +10,21 @@ POWER_COMMANDS = [
 
 ADMINS = process.env.ADMINS?.split(',').map (admin) -> admin.trim()
 
-rooms = null
-MongoClient.connect MONGO_URL, (err, db) ->
-  throw new Error(err) if err
-  console.log "Connected to mongo server at #{MONGO_URL}"
-  rooms = db.collection 'rocketchat_room'
-
 module.exports = (robot) ->
   robot.router.post '/zabbix', (req, res) ->
     data = JSON.parse req.body.payload
     fields = data.attachments[0].fields
     host = _.find fields, title: 'Host'
+    gql = """{projects(host: "#{host?.value}"){ rocketChatRoomId }}"""
     robot.http("#{SEMANTIQL_URL}/api")
       .header('Content-Type', 'application/json')
-      .post(JSON.stringify(query: "{projects(host:\"#{host?.value}\"){ name }}")) (err, res, body) ->
+      .post(JSON.stringify(query: gql)) (err, res, body) ->
         if err
           console.error err
         else
           projects = JSON.parse(body).data.projects
           for project in projects
-            rooms.findOne {name: project?.name.toLowerCase()}, (err, room) ->
-              robot.messageRoom room._id, data if room
+            robot.messageRoom project.rocketChatRoomId, data if project?.rocketChatRoomId
     res.send 'OK'
 
   robot.listenerMiddleware (context, next, done) ->
