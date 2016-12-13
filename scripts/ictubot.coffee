@@ -1,6 +1,8 @@
 _ = require 'lodash'
+MongoClient = require('mongodb').MongoClient
 jenkins = require 'jenkins'
 
+MONGO_URL = process.env.MONGO_URL
 JENKINS_URL = process.env.JENKINS_URL
 SEMANTIQL_URL = process.env.SEMANTIQL_URL
 
@@ -9,6 +11,13 @@ POWER_COMMANDS = [
 ]
 
 ADMINS = process.env.ADMINS?.split(',').map (admin) -> admin.trim()
+
+rooms = null
+MongoClient.connect MONGO_URL, (err, db) ->
+  throw new Error(err) if err
+  console.log "Connected to mongo server at #{MONGO_URL}"
+  rooms = db.collection 'rocketchat_room'
+
 
 module.exports = (robot) ->
   robot.router.post '/zabbix', (req, res) ->
