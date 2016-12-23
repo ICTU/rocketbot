@@ -15,5 +15,4 @@ services:
       - RESPOND_TO_DM=true
       - JENKINS_URL=<jenkins url>
       - SEMANTIQL_URL=<semantiql url>
-      - MONGO_URL=<rocketchat mongo url>
       - ADMINS=<comma separated list of user names>

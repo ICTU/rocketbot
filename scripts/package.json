@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "jenkins": "^0.19.0",
-    "lodash": "^4.17.2",
-    "mongodb": "^2.2.10"
+    "lodash": "^4.17.2"
   }
 }
