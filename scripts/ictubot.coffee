@@ -28,7 +28,7 @@ module.exports = (robot) ->
       unless projects.length
         res.send "Ooh, you're naughty! You know I can only do this in private, project rooms ;)"
       else
-        cb? projects[0].name
+        cb? projects[0].name?.toLowerCase()
 
   robot.router.post '/zabbix', (req, res) ->
     data = JSON.parse req.body.payload
