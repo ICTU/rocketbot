@@ -6,13 +6,14 @@ SEMANTIQL_URL = process.env.SEMANTIQL_URL
 
 POWER_COMMANDS = [
   'ssh.execute.command' # String that matches the listener ID
+  'semantiql.query'
 ]
 
 ADMINS = process.env.ADMINS?.split(',').map (admin) -> admin.trim()
 
 
 module.exports = (robot) ->
-  getProjects = (gql, cb) ->
+  querySemantiql = (gql, cb) ->
     robot.http("#{SEMANTIQL_URL}/api")
       .header('Content-Type', 'application/json')
       .post(JSON.stringify(query: gql)) (err, res, body) ->
@@ -20,23 +21,24 @@ module.exports = (robot) ->
           console.error err
           cb? []
         else
-          cb? JSON.parse(body)?.data?.projects
+          console.log "#{JSON.stringify(JSON.parse(body).data, null, 3)}"
+          cb? JSON.parse(body)?.data
 
   inProjectRoom = (res, cb) ->
     gql = """{projects(rocketChatRoomId: "#{res.message.room}"){ name }}"""
-    getProjects gql, (projects) ->
-      unless projects.length
+    querySemantiql gql, (result) ->
+      unless result.projects.length
         res.send "Ooh, you're naughty! You know I can only do this in private, project rooms ;)"
       else
-        cb? projects[0].name?.toLowerCase()
+        cb? result.projects[0].name?.toLowerCase()
 
   robot.router.post '/zabbix', (req, res) ->
     data = JSON.parse req.body.payload
     fields = data.attachments[0].fields
     host = _.find fields, title: 'Host'
     gql = """{projects(host: "#{host?.value}"){ rocketChatRoomId }}"""
-    getProjects gql, (projects) ->
-      for project in projects
+    querySemantiql gql, (result) ->
+      for project in result.projects
         robot.messageRoom project.rocketChatRoomId, data if project?.rocketChatRoomId
     res.send 'OK'
 
@@ -49,6 +51,34 @@ module.exports = (robot) ->
         done()
     else
       next()
+
+  robot.respond /show all fields/i, { id: "semantiql.query"}, (res) ->
+    gql = """{__type(name: "Project"){ fields{name} }}"""
+    querySemantiql gql, (result) ->
+      if result?.__type?.fields?.length
+        res.send """
+        ```
+        #{JSON.stringify(result.__type.fields, null, 3)}
+        ```
+        """
+      else
+        res.send "Failed to retrieve available fields."
+
+  robot.respond /show (.*) for (.*) is (.*)/i, { id: "semantiql.query" }, (res) ->
+    requestFieldName = res.match[1]
+    queryFieldName = res.match[2]
+    queryFieldValue = res.match[3]
+    gql = """{projects(#{queryFieldName}: "#{queryFieldValue}"){ #{requestFieldName} }}"""
+
+    querySemantiql gql, (result) ->
+      if result?.projects?.length
+        res.send """
+        ```
+        #{JSON.stringify(result.projects, null, 3)}
+        ```
+        """
+      else
+        res.send "Failed to retrieve #{requestFieldName} for #{queryFieldName}: #{queryFieldValue}. Your query may be incorrect"
 
   robot.respond /help/i, (res) ->
     res.send """

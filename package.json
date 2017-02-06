@@ -1,24 +1,6 @@
 {
-  "name": "hubot-rocketchat",
-  "version": "1.1.5",
-  "author": {
-    "name": "Rocket.Chat",
-    "url": "https://rocket.chat/"
-  },
-  "contributors": [
-    {
-      "name": "Sing Li",
-      "email": "sing.li@rocket.chat"
-    },
-    {
-      "name": "Gabriel Engel",
-      "email": "gabriel.engel@rocket.chat"
-    },
-    {
-      "name": "Aaron Ogle",
-      "email": "aaron.ogle@rocket.chat"
-    }
-  ],
+  "name": "ictu-rocketbot",
+  "version": "1.2.0",
   "description": "Hubot Rocket.Chat Adapter",
   "keywords": [
     "hubot",
@@ -34,11 +16,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RocketChat/hubot-rocketchat.git"
-  },
-  "bugs": {
-    "url": "https://github.com/RocketChat/hubot-rocketchat/issues",
-    "email": "support@rocket.chat"
+    "url": "https://github.com/ICTU/rocketbot.git"
   },
   "devDependencies": {
     "coffee-script": "~1.7.1"
