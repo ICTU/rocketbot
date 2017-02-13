@@ -7,6 +7,7 @@ SEMANTIQL_URL = process.env.SEMANTIQL_URL
 POWER_COMMANDS = [
   'ssh.execute.command' # String that matches the listener ID
   'semantiql.query'
+  'admin.help'
 ]
 
 ADMINS = process.env.ADMINS?.split(',').map (admin) -> admin.trim()
@@ -52,7 +53,7 @@ module.exports = (robot) ->
     else
       next()
 
-  robot.respond /show all fields/i, { id: "semantiql.query"}, (res) ->
+  robot.respond /show all fields for projects$/i, { id: "semantiql.query"}, (res) ->
     gql = """{__type(name: "Project"){ fields{name} }}"""
     querySemantiql gql, (result) ->
       if result?.__type?.fields?.length
@@ -64,21 +65,58 @@ module.exports = (robot) ->
       else
         res.send "Failed to retrieve available fields."
 
-  robot.respond /show (.*) for (.*) is (.*)/i, { id: "semantiql.query" }, (res) ->
-    requestFieldName = res.match[1]
-    queryFieldName = res.match[2]
-    queryFieldValue = res.match[3]
-    gql = """{projects(#{queryFieldName}: "#{queryFieldValue}"){ #{requestFieldName} }}"""
-
+  robot.respond /show all fields for dashboards$/i, { id: "semantiql.query"}, (res) ->
+    gql = """{__type(name: "Dashboard"){ fields{name} }}"""
     querySemantiql gql, (result) ->
-      if result?.projects?.length
+      if result?.__type?.fields?.length
         res.send """
         ```
-        #{JSON.stringify(result.projects, null, 3)}
+        #{JSON.stringify(result.__type.fields, null, 3)}
         ```
         """
       else
-        res.send "Failed to retrieve #{requestFieldName} for #{queryFieldName}: #{queryFieldValue}. Your query may be incorrect"
+        res.send "Failed to retrieve available fields."
+
+  robot.respond /in (.*) show (.*) for (.*): (.*)/i, { id: "semantiql.query" }, (res) ->
+    type = res.match[1]
+    requestFieldName = res.match[2]
+    queryFieldName = res.match[3]
+    queryFieldValue = res.match[4]
+    gql = """{#{type}(#{queryFieldName}: "#{queryFieldValue}"){ #{requestFieldName} }}"""
+
+    querySemantiql gql, (result) ->
+      if result?[type].length
+        res.send """
+        ```
+        #{JSON.stringify(result[type], null, 3)}
+        ```
+        """
+      else
+        res.send "Failed to retrieve #{requestFieldName} for #{queryFieldName}: #{queryFieldValue} in #{type}. Your query may be incorrect"
+
+  robot.respond /admin help/i, { id: "admin.help"}, (res) ->
+    res.send """
+    Hello #{res.message.user.name}, I am the gorgeous ICTU ISD automation bot.
+    Below you will find the administrator commands available to you. Just prefix the command with my name and I'll do
+    as you wish.
+
+    *admin help*
+        I will display this message.
+
+    *for (.*) execute command: `(.*)`*
+        Specify the command you want me to execute on the target host.
+        Example:
+          for innovation execute command: `echo hello world`
+
+    *in (.*) show (.*) for (.*): (.*)*
+        I will query semantiql with the parameters you passed.
+        Example:
+          in projects show vlan for name: RWS
+          in dashboards show infraAgent for projectName: ISD
+
+    *show all fields for (project|dashboard)*
+        I will show you the fields for all types defined in semantiql. These fields can be used to construct your semantiql query
+    """
 
   robot.respond /help/i, (res) ->
     res.send """
