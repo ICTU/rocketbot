@@ -155,7 +155,7 @@ module.exports = (robot) ->
   robot.respond /clean local docker graph/i, (res) ->
     inProjectRoom res, (project) ->
       userOrRoom = "##{project}"
-      command = "docker rm -v \\$(docker ps -aq) || true; docker rmi \\$(docker images -q) || true; docker volume rm \$(docker volume ls -q) || true"
+      command = "docker rm -v \\$(docker ps -aq) || true; docker rmi \\$(docker images -q) || true; docker volume rm \\$(docker volume ls -q) || true"
       runCommandOnHosts project,
         userOrRoom,
         command
