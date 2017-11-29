@@ -170,19 +170,18 @@ module.exports = (robot) ->
 
   robot.respond /clean( my| our)? docker registry/i, (res) ->
     inProjectRoom res, (project) ->
-				res.send "This command is currently not available. Please create an IQT request in JIRA to cleanup your registry."
-#      startJenkinsJob 'garbage-collect-docker-registry',
-#        projectName: project
-#        runType: 'execute'
-#      , (err, nr) ->
-#          if err
-#            console.error err
-#            res.send """I could not start cleaning up your docker registry, because
-#                      #{err}."""
-#          else
-#            res.send """I am now trying to clean up your docker registry.
-#                      To do that, I will have to stop it first.
-#                      Do not worry, I'll start it again, once I am done."""
+      startJenkinsJob 'garbage-collect-docker-registry',
+        projectKey: project
+        runType: 'execute'
+      , (err, nr) ->
+          if err
+            console.error err
+            res.send """I could not start cleaning up your docker registry, because
+                      #{err}."""
+          else
+            res.send """I am now trying to clean up your docker registry.
+                      To do that, I will have to stop it first.
+                      Do not worry, I'll start it again, once I am done."""
 
 runCommandOnHosts = (projectName, userOrRoom, command, cb) ->
   startJenkinsJob "run-command-on-hosts",
