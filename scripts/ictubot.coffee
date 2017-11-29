@@ -3,6 +3,7 @@ jenkins = require 'jenkins'
 
 JENKINS_URL = process.env.JENKINS_URL
 SEMANTIQL_URL = process.env.SEMANTIQL_URL
+JENKINS_AUTH_TOKEN = process.env.JENKINS_AUTH_TOKEN
 
 POWER_COMMANDS = [
   'ssh.execute.command' # String that matches the listener ID
@@ -173,6 +174,7 @@ module.exports = (robot) ->
       startJenkinsJob 'garbage-collect-docker-registry',
         projectKey: project
         runType: 'execute'
+        token: JENKINS_AUTH_TOKEN
       , (err, nr) ->
           if err
             console.error err
