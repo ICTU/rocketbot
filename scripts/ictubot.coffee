@@ -27,12 +27,12 @@ module.exports = (robot) ->
           cb? JSON.parse(body)?.data
 
   inProjectRoom = (res, cb) ->
-    gql = """{projects(rocketChatRoomId: "#{res.message.room}"){ name }}"""
+    gql = """{projects(rocketChatRoomId: "#{res.message.room}"){ key }}"""
     querySemantiql gql, (result) ->
       unless result.projects.length
         res.send "Ooh, you're naughty! You know I can only do this in private, project rooms ;)"
       else
-        cb? result.projects[0].name?.toLowerCase()
+        cb? result.projects[0].key?.toLowerCase()
 
   robot.router.post '/zabbix', (req, res) ->
     data = JSON.parse req.body.payload
