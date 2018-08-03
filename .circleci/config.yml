@@ -1,0 +1,30 @@
+version: 2
+
+jobs:
+  build_and_push_tag:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          shell: /bin/bash
+          command: |
+            ./build.sh
+            docker tag ictu/rocketbot ictu/rocketbot:${CIRCLE_TAG}
+            MAJOR_VERSION=${CIRCLE_TAG/.*}; docker tag ictu/rocketbot:${CIRCLE_TAG} ictu/rocketbot:${MAJOR_VERSION}
+            MINOR_VERSION=${CIRCLE_TAG%.*}; docker tag ictu/rocketbot:${CIRCLE_TAG} ictu/rocketbot:${MINOR_VERSION}
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push ictu/rocketbot
+            docker push ictu/rocketbot:${CIRCLE_TAG}
+            docker push ictu/rocketbot:${MINOR_VERSION}
+            docker push ictu/rocketbot:${MAJOR_VERSION}
+
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - build_and_push_tag:
+          filters:
+            tags:
+              only: /^[0-9]+\.[0-9]+\.[0-9]+$/
+            branches:
+              ignore: /.*/
